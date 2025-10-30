@@ -1,0 +1,38 @@
+{
+  "name": "honeycoin-audit-trail",
+  "version": "1.0.0",
+  "description": "An SQL-based audit-trail service built with Node.js, TypeScript, and Express.",
+  "main": "src/server.ts",
+  "scripts": {
+    "start": "ts-node src/server.ts",
+    "dev": "ts-node-dev src/server.ts",
+    "build": "tsc",
+    "migrate": "psql -U <username> -d <database> -f src/db/migrations/001_create_audit_entries_table.sql",
+    "seed": "ts-node scripts/seed-audit-data.ts",
+    "test": "jest"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "pg": "^8.7.1",
+    "dotenv": "^10.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.4.4",
+    "ts-node": "^10.0.0",
+    "ts-node-dev": "^1.1.8",
+    "jest": "^27.0.6",
+    "@types/jest": "^27.0.2",
+    "@types/node": "^16.0.0",
+    "@types/express": "^4.17.13"
+  },
+  "keywords": [
+    "audit",
+    "trail",
+    "service",
+    "nodejs",
+    "typescript",
+    "express"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}

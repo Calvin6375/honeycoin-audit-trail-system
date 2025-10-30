@@ -1,0 +1,6 @@
+CREATE TABLE audit_entries (
+    id SERIAL PRIMARY KEY,
+    action VARCHAR(50) NOT NULL,
+    timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    user_id VARCHAR(50) NOT NULL
+);
