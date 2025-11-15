@@ -3,21 +3,25 @@ import { Transaction, TransactionWithRate } from '../models/transaction';
 
 export class TransactionRepository {
     async getUserTransactionsWithRates(userId: number): Promise<TransactionWithRate[]> {
+        // NOTE: The physical `transactions` table in the database uses a different
+        // column naming scheme (transactionId, transactionType, senderAmount, etc.).
+        // We alias those columns to the logical names expected by the rest of the
+        // codebase (id, user_id, type, amount, currency_code, created_at, ...).
         const sql = `
             SELECT
-                t.id,
-                t.user_id,
-                t.type,
-                t.amount,
-                t.currency_code,
-                t.source_transaction_id,
-                t.metadata,
-                t.created_at,
+                t.transactionId AS id,
+                t.userId AS user_id,
+                t.transactionType AS type,
+                t.senderAmount AS amount,
+                t.senderCurrency AS currency_code,
+                NULL AS source_transaction_id,
+                NULL AS metadata,
+                t.fullTimestamp AS created_at,
                 cr.rate AS rate_to_primary
             FROM transactions t
-            LEFT JOIN currency_rates cr ON cr.currency_code = t.currency_code
-            WHERE t.user_id = ?
-            ORDER BY t.created_at ASC, t.id ASC
+            LEFT JOIN currency_rates cr ON cr.currency_code = t.senderCurrency
+            WHERE t.userId = ?
+            ORDER BY t.fullTimestamp ASC, t.transactionId ASC
         `;
 
         const { rows } = await query(sql, [userId]);
@@ -38,16 +42,16 @@ export class TransactionRepository {
     async getTransactionById(id: number): Promise<Transaction | null> {
         const sql = `
             SELECT
-                t.id,
-                t.user_id,
-                t.type,
-                t.amount,
-                t.currency_code,
-                t.source_transaction_id,
-                t.metadata,
-                t.created_at
+                t.transactionId AS id,
+                t.userId AS user_id,
+                t.transactionType AS type,
+                t.senderAmount AS amount,
+                t.senderCurrency AS currency_code,
+                NULL AS source_transaction_id,
+                NULL AS metadata,
+                t.fullTimestamp AS created_at
             FROM transactions t
-            WHERE t.id = ?
+            WHERE t.transactionId = ?
             LIMIT 1
         `;
 
