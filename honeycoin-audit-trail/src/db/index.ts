@@ -1,18 +1,24 @@
-import { Pool } from 'pg';
+import mysql from 'mysql2/promise';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-const pool = new Pool({
-    user: process.env.DB_USER,
+const pool = mysql.createPool({
     host: process.env.DB_HOST,
-    database: process.env.DB_NAME,
+    user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
     port: Number(process.env.DB_PORT),
 });
 
-const query = (text: string, params?: any[]) => {
-    return pool.query(text, params);
+const query = async (text: string, params?: any[]) => {
+    const connection = await pool.getConnection();
+    try {
+        const [rows] = await connection.execute(text, params);
+        return { rows };
+    } finally {
+        connection.release();
+    }
 };
 
 export { query };

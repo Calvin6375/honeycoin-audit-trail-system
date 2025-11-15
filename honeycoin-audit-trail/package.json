@@ -7,14 +7,14 @@
     "start": "ts-node src/server.ts",
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
-    "migrate": "psql -U <username> -d <database> -f src/db/migrations/001_create_audit_entries_table.sql",
+    "migrate": "mysql -u <username> -p <database> < src/db/migrations/001_create_audit_entries_table.sql",
     "seed": "ts-node scripts/seed-audit-data.ts",
     "test": "jest"
   },
   "dependencies": {
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
-    "pg": "^8.7.1"
+    "mysql2": "^3.6.0"
   },
   "devDependencies": {
     "@types/express": "^4.17.13",
