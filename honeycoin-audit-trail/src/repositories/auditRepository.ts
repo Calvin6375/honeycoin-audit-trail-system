@@ -1,29 +1,23 @@
-import { Pool } from 'pg';
 import { AuditEntry } from '../models/auditEntry';
-import db from '../db';
+import { query } from '../db';
 
 export class AuditRepository {
-    private pool: Pool;
-
-    constructor() {
-        this.pool = db;
-    }
 
     async saveAuditEntry(entry: AuditEntry): Promise<void> {
-        const query = `
+        const sql = `
             INSERT INTO audit_entries (id, action, timestamp, user_id)
-            VALUES ($1, $2, $3, $4)
+            VALUES (?, ?, ?, ?)
         `;
         const values = [entry.id, entry.action, entry.timestamp, entry.userId];
-        await this.pool.query(query, values);
+        await query(sql, values);
     }
 
     async getAuditEntries(userId: string): Promise<AuditEntry[]> {
-        const query = `
-            SELECT * FROM audit_entries WHERE user_id = $1
+        const sql = `
+            SELECT * FROM audit_entries WHERE user_id = ?
         `;
-        const { rows } = await this.pool.query(query, [userId]);
-        return rows.map(row => ({
+        const { rows } = await query(sql, [userId]);
+        return rows.map((row: any) => ({
             id: row.id,
             action: row.action,
             timestamp: row.timestamp,

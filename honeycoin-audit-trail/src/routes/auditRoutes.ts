@@ -4,6 +4,7 @@ import { AuditController } from '../controllers/auditController';
 const router = Router();
 const auditController = new AuditController();
 
-router.get('/api/audit/:userId', auditController.getAudit.bind(auditController));
+// Base path for this router is /api/audit, so this becomes GET /api/audit/:userId
+router.get('/:userId', auditController.getAudit.bind(auditController));
 
 export default router;
